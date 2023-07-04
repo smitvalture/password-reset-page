@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
 
+const supabase = createClient(
+  'https://omxcoxoxfwiguhchvgih.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9teGNveG94ZndpZ3VoY2h2Z2loIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODM3MjQwODgsImV4cCI6MTk5OTMwMDA4OH0.jan8HVIbvKmZBPSSsl9O9cWkYO7PdWSTacf9KhT1_78'
+);
 const PasswordResetPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -24,19 +29,32 @@ const PasswordResetPage = () => {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const isValid = validateForm();
 
     if (isValid) {
-      // Perform password reset logic here
-      console.log('Password:', password);
-      console.log('Confirm Password:', confirmPassword);
+      try {
+        const { user, error } = await supabase.auth.updateUser({
+          password: password,
+        });
 
-      // Reset form fields
-      setPassword('');
-      setConfirmPassword('');
+        if (error) {
+          // Handle error
+          console.error('Password reset error:', error.message);
+        } else {
+          // Password reset successful
+          console.log('Password reset successful');
+
+          // Reset form fields
+          setPassword('');
+          setConfirmPassword('');
+        }
+      } catch (error) {
+        // Handle error
+        console.error('Password reset error:', error.message);
+      }
     }
   };
 
