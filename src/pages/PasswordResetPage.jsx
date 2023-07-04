@@ -8,6 +8,7 @@ const supabase = createClient(
 const PasswordResetPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [buttonDisable, setButtonDisable] = useState(false)
   const [error, setError] = useState({
     password: '',
     confirmPassword: '',
@@ -19,6 +20,7 @@ const PasswordResetPage = () => {
       ...prevState,
       password: '',
     }));
+    setButtonDisable(false)
   };
 
   const handleConfirmPasswordChange = (event) => {
@@ -27,6 +29,7 @@ const PasswordResetPage = () => {
       ...prevState,
       confirmPassword: '',
     }));
+    setButtonDisable(false)
   };
 
   const handleSubmit = async (event) => {
@@ -51,6 +54,11 @@ const PasswordResetPage = () => {
           setPassword('');
           setConfirmPassword('');
         }
+
+        setTimeout(() => {
+          setButtonDisable(true)
+        }, 60000);
+
       } catch (error) {
         // Handle error
         console.error('Password reset error:', error.message);
@@ -74,12 +82,14 @@ const PasswordResetPage = () => {
         ...prevError,
         password: 'Please enter a password',
       }));
+      setButtonDisable(true)
       isValid = false;
     } else if (!passwordRegex.test(password)) {
       setError((prevError) => ({
         ...prevError,
         password: 'Password must contain at least 8 characters, one letter, and one number',
       }));
+      setButtonDisable(true)
       isValid = false;
     }
 
@@ -88,12 +98,14 @@ const PasswordResetPage = () => {
         ...prevError,
         confirmPassword: 'Please confirm your password',
       }));
+      setButtonDisable(true)
       isValid = false;
     } else if (password !== confirmPassword) {
       setError((prevError) => ({
         ...prevError,
         confirmPassword: 'Passwords do not match',
       }));
+      setButtonDisable(true)
       isValid = false;
     }
 
@@ -133,7 +145,7 @@ const PasswordResetPage = () => {
           <div className="flex justify-center">
             <button
               type="submit"
-              disabled={Object.values(error).some((value) => value !== '')}
+              disabled={buttonDisable}
               className="bg-yellow-500 disabled:bg-yellow-100 disabled:text-gray-400 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
               Reset Password
