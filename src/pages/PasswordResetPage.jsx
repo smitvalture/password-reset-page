@@ -26,40 +26,62 @@ const PasswordResetPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Reset form fields
-    setPassword('');
-    setConfirmPassword('');
+
+    const isValid = validateForm();
+
+    if (isValid) {
+      // Perform password reset logic here
+      console.log('Password:', password);
+      console.log('Confirm Password:', confirmPassword);
+
+      // Reset form fields
+      setPassword('');
+      setConfirmPassword('');
+    }
   };
 
   const validateForm = () => {
     let isValid = true;
-    const newError = {
+
+    setError((prevError) => ({
+      ...prevError,
       password: '',
       confirmPassword: '',
-    };
+    }));
 
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    // Password must contain at least 8 characters, one letter, and one number
 
     if (password.trim() === '') {
-      newError.password = 'Please enter a password';
+      setError((prevError) => ({
+        ...prevError,
+        password: 'Please enter a password',
+      }));
       isValid = false;
     } else if (!passwordRegex.test(password)) {
-      newError.password = 'Password must contain at least 8 characters, one letter, and one number';
+      setError((prevError) => ({
+        ...prevError,
+        password: 'Password must contain at least 8 characters, one letter, and one number',
+      }));
       isValid = false;
     }
 
     if (confirmPassword.trim() === '') {
-      newError.confirmPassword = 'Please confirm your password';
+      setError((prevError) => ({
+        ...prevError,
+        confirmPassword: 'Please confirm your password',
+      }));
       isValid = false;
     } else if (password !== confirmPassword) {
-      newError.confirmPassword = 'Passwords do not match';
+      setError((prevError) => ({
+        ...prevError,
+        confirmPassword: 'Passwords do not match',
+      }));
       isValid = false;
     }
 
-    setError(newError);
     return isValid;
   };
+
 
   return (
     <div className="flex justify-center items-center h-screen bg-yellow-200">
@@ -93,8 +115,8 @@ const PasswordResetPage = () => {
           <div className="flex justify-center">
             <button
               type="submit"
-              onClick={validateForm}
-              className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              disabled={Object.values(error).some((value) => value !== '')}
+              className="bg-yellow-500 disabled:bg-yellow-100 disabled:text-gray-400 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
               Reset Password
             </button>
