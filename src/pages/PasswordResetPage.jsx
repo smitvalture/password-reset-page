@@ -103,7 +103,7 @@ const PasswordResetPage = () => {
 
   return (
     <div className="flex justify-center items-center h-screen bg-yellow-200">
-      <div className="bg-white w-1/5 p-8 rounded shadow-lg">
+      <div className="bg-white w-96 p-8 rounded shadow-lg">
         <h2 className="text-2xl text-center mb-4">Password Reset</h2>
         <form onSubmit={handleSubmit} noValidate>
           <div className="mb-4">
